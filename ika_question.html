@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ikariam - Questionário da Aliança</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ancient-gold: #d4af37;
+            --ocean-blue: #004a7c;
+            --parchment: #fcf1d6;
+            --dark-wood: #3d2b1f;
+            --marble-white: #f0f0f0;
+            --danger-red: #8b0000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #000;
+            background: url('https://images.unsplash.com/photo-1548013146-72479768bbaa?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            background: var(--parchment);
+            width: 95%;
+            max-width: 850px;
+            padding: 50px;
+            margin: 40px 0;
+            border: 20px solid transparent;
+            border-image: url('https://www.transparenttextures.com/patterns/dark-leather.png') 30 round;
+            box-shadow: 0 0 60px rgba(0,0,0,0.9), inset 0 0 100px rgba(101, 67, 33, 0.2);
+            border-radius: 8px;
+            position: relative;
+            background-image: url('https://www.transparenttextures.com/patterns/old-map.png');
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px double var(--dark-wood);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: #4a3321;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.8rem;
+            color: var(--ocean-blue);
+            margin-top: -5px;
+        }
+
+        .user-info-section {
+            background: rgba(74, 51, 33, 0.05);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(74, 51, 33, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: var(--dark-wood);
+            font-size: 0.9rem;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 1px solid var(--dark-wood);
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+        }
+
+        .instruction {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #5d4037;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+        }
+
+        .question-block {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(74, 51, 33, 0.2);
+            border-left: 8px solid var(--ocean-blue);
+            border-radius: 4px;
+        }
+
+        .question-block.fixed {
+            border-left-color: var(--ancient-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .editable-question {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .obs-label {
+            font-size: 0.75rem;
+            color: var(--ocean-blue);
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .editable-obs {
+            font-size: 1rem;
+            color: #5d4037;
+            font-style: italic;
+            display: block;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-bottom: 1.5px solid rgba(161, 136, 127, 0.5);
+            line-height: 1.4;
+        }
+
+        .rating-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .rating-container label {
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: #4a3321;
+        }
+
+        select {
+            padding: 10px 15px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            background: #fff;
+            border: 2px solid var(--dark-wood);
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(to bottom, #1a4a7a, #002d5a);
+            color: var(--parchment);
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 2px solid var(--ancient-gold);
+            cursor: pointer;
+            transition: 0.4s;
+            margin-top: 20px;
+            text-transform: uppercase;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-submit:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            border-color: #7f8c8d;
+        }
+
+        .btn-reset {
+            background: linear-gradient(to bottom, #8b0000, #4a0000);
+            border-color: #ff4444;
+            margin-top: 40px;
+        }
+
+        .btn-back {
+            background: #666;
+            border-color: #999;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            padding: 10px;
+            color: white;
+            border-style: solid;
+            cursor: pointer;
+        }
+
+        .decoration-gold {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: var(--ancient-gold);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid var(--dark-wood);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 2rem;
+            z-index: 10;
+            cursor: pointer;
+            transition: transform 0.3s;
+            text-decoration: none;
+        }
+        .decoration-gold:hover { transform: translateX(-50%) scale(1.1); }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        .admin-table th, .admin-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .admin-table th {
+            background: var(--ocean-blue);
+            color: white;
+            font-family: 'Cinzel', serif;
+        }
+
+        .score-card {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .score-box {
+            background: white;
+            padding: 15px;
+            border: 2px solid var(--ancient-gold);
+            text-align: center;
+            border-radius: 4px;
+        }
+        .score-box h4 { margin: 0; font-family: 'Cinzel', serif; color: var(--dark-wood); }
+        .score-box span { font-size: 1.8rem; font-weight: bold; color: var(--ocean-blue); }
+
+        #resultsArea {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            background: #fff;
+            border: 3px double var(--ancient-gold);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+        }
+
+        .footer-stamp {
+            text-align: center;
+            margin-top: 30px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: rgba(74, 51, 33, 0.5);
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: 'Cinzel';
+            z-index: 9999;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loadingOverlay">Consultando os Deuses...</div>
+
+<div class="container">
+    <a href="javascript:void(0)" class="decoration-gold" onclick="goToAdmin()" title="Acesso Administrativo">⚖️</a>
+    
+    <!-- PÁGINA DE VOTAÇÃO -->
+    <div id="pageVoting" class="page active">
+        <div class="header-section">
+            <h1>Conselho de Ikariam</h1>
+            <div class="subtitle">Votação em Nuvem da Aliança</div>
+        </div>
+
+        <form id="quizForm">
+            <div class="user-info-section">
+                <div class="input-group">
+                    <label for="userName">Nome do Governador (Opcional):</label>
+                    <input type="text" id="userName" class="input-field" placeholder="Ex: Agamemnon">
+                </div>
+                <div class="input-group">
+                    <label for="accountCount">Quantas contas você tem/Pretende transferir para o servidor?</label>
+                    <input type="number" id="accountCount" class="input-field" min="1" value="1" required>
+                </div>
+            </div>
+
+            <p class="instruction">Instrução: Atribua notas de 1 a 4. Os valores não podem ser repetidos.</p>
+
+            <!-- Servidores -->
+            <div class="question-block fixed">
+                <span class="editable-question">Servidor 1</span>
+                <span class="obs-label">Observações do Oráculo:</span>
+                <span class="editable-obs">Sem bónus. Apenas os valores padrão (Velhos tempos).</span>
+                <div class="rating-container">
+                    <label>Sua Nota:</label>
+                    <select class="nota-select" required>
+                        <option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-block fixed">
+                <span class="editable-question">Servidor 2</span>
+                <span class="obs-label">Observações do Oráculo:</span>
+                <span class="editable-obs">Recursos +35%. Edifícios rápidos. Tropas caras e lentas.</span>
+                <div class="rating-container">
+                    <label>Sua Nota:</label>
+                    <select class="nota-select" required>
+                        <option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-block fixed">
+                <span class="editable-question">Servidor 3</span>
+                <span class="obs-label">Observações do Oráculo:</span>
+                <span class="editable-obs">Recursos +25%. Edifícios +25% rápido. Ciência +25%.</span>
+                <div class="rating-container">
+                    <label>Sua Nota:</label>
+                    <select class="nota-select" required>
+                        <option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-block fixed">
+                <span class="editable-question">Servidor 4</span>
+                <span class="obs-label">Observações do Oráculo:</span>
+                <span class="editable-obs">Recursos de guerra +50%. Tropas baratas e rápidas. Sacerdotes +40%.</span>
+                <div class="rating-container">
+                    <label>Sua Nota:</label>
+                    <select class="nota-select" required>
+                        <option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Selo de Envio</button>
+        </form>
+
+        <div id="resultsArea">
+            <h2 style="font-family: 'Cinzel'; color: var(--ocean-blue);">Prévia das Notas Globais</h2>
+            <div id="resultsList"></div>
+            <p style="margin-top: 15px; font-size: 0.9rem; color: #666;">Os resultados mostram a soma de todos os votos na nuvem.</p>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN -->
+    <div id="pageAdminLogin" class="page">
+        <div class="header-section">
+            <h1>Acesso Restrito</h1>
+            <div class="subtitle">Câmara do Senado</div>
+        </div>
+        <div class="user-info-section">
+            <div class="input-group">
+                <label>Senha de Acesso:</label>
+                <input type="password" id="adminPassword" class="input-field" placeholder="Digite a senha sagrada...">
+            </div>
+            <button onclick="checkAdminPassword()" class="btn-submit">Entrar no Senado</button>
+            <button onclick="showPage('pageVoting')" class="btn-back">Retornar às Perguntas</button>
+        </div>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO -->
+    <div id="pageAdminDashboard" class="page">
+        <div class="header-section">
+            <h1>Painel do Oráculo</h1>
+            <div class="subtitle">Dados em Tempo Real</div>
+        </div>
+        <h3 style="font-family: 'Cinzel';">Soma Total das Notas</h3>
+        <div class="score-card" id="adminScoreCard"></div>
+        <h3 style="font-family: 'Cinzel'; margin-top: 30px;">Registos de Governadores</h3>
+        <div style="overflow-x: auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr><th>Governador</th><th>Contas</th><th>Voto (S1|S2|S3|S4)</th><th>Ações</th></tr>
+                </thead>
+                <tbody id="adminVotesTable"></tbody>
+            </table>
+        </div>
+        <button onclick="resetVotes()" class="btn-submit btn-reset">Resetar Votação</button>
+        <button onclick="showPage('pageVoting')" class="btn-back">Voltar ao Formulário</button>
+    </div>
+
+    <div class="footer-stamp">Propriedade do Senado de Ikariam &bull; MMXIV</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    // --- CONFIGURAÇÃO DO FIREBASE (VINCULADA) ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyALqFDFm5J-IfqIlvvXo3Df_401zQq5U_4",
+        authDomain: "servidor-96de7.firebaseapp.com",
+        projectId: "servidor-96de7",
+        storageBucket: "servidor-96de7.firebasestorage.app",
+        messagingSenderId: "83438606866",
+        appId: "1:83438606866:web:305b63575daf4420fbd6cb",
+        measurementId: "G-VH76862DHW"
+    };
+
+    let app, db, auth;
+    
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+    } catch (e) {
+        console.error("Falha ao inicializar o Templo de Zeus:", e);
+    }
+    
+    // Caminho da coleção (Seguindo as Regras de Path do Firebase)
+    const appId = "ikariam-voting"; 
+    const collectionPath = ['artifacts', appId, 'public', 'data', 'votes'];
+
+    let currentUser = null;
+    let allVotes = [];
+    let unsubscribeListener = null;
+
+    // --- Autenticação Robusta ---
+    async function initAuth() {
+        try {
+            await signInAnonymously(auth);
+            console.log("Conectado anonimamente ao templo.");
+        } catch (e) {
+            console.error("Erro na autenticação anônima:", e);
+            if (e.code === 'auth/configuration-not-found') {
+                alert("ERRO: O provedor 'Anônimo' deve ser ativado no console do Firebase para que os votos sejam salvos.");
+            } else {
+                alert("Erro de conexão: Verifique sua internet ou as configurações do Firebase.");
+            }
+        }
+    }
+
+    // Inicia ouvintes de estado
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if (user) {
+            console.log("Identidade confirmada:", user.uid);
+            startListening();
+        } else {
+            console.log("Aguardando confirmação divina...");
+            initAuth();
+        }
+    });
+
+    // --- Escuta de Dados em Tempo Real ---
+    function startListening() {
+        if (unsubscribeListener) unsubscribeListener();
+
+        const votesRef = collection(db, ...collectionPath);
+        unsubscribeListener = onSnapshot(query(votesRef), (snapshot) => {
+            allVotes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            updateUIs();
+        }, (error) => {
+            console.error("Erro ao observar a nuvem:", error);
+        });
+    }
+
+    function updateUIs() {
+        renderPartialResults();
+        if (document.getElementById('pageAdminDashboard').classList.contains('active')) {
+            loadAdminData();
+        }
+    }
+
+    // --- Envio de Voto ---
+    document.getElementById('quizForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!currentUser) {
+            alert("Aguardando conexão com o Oráculo... Tente novamente em alguns segundos.");
+            return;
+        }
+
+        const name = document.getElementById('userName').value.trim() || "Anônimo";
+        const accounts = parseInt(document.getElementById('accountCount').value);
+        const selects = document.querySelectorAll('.nota-select');
+        const notes = Array.from(selects).map(s => parseInt(s.value));
+
+        if (notes.includes(NaN)) {
+            alert("Por favor, atribua todas as notas sagradas.");
+            return;
+        }
+
+        document.getElementById('loadingOverlay').style.display = "flex";
+
+        try {
+            const votesRef = collection(db, ...collectionPath);
+            await addDoc(votesRef, {
+                name,
+                accounts,
+                notes,
+                userId: currentUser.uid,
+                timestamp: Date.now()
+            });
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "VOTO COMPUTADO";
+            btn.disabled = true;
+            btn.style.background = "#27ae60";
+            document.getElementById('resultsArea').style.display = "block";
+            
+            alert("Voto gravado na nuvem com sucesso!");
+        } catch (error) {
+            console.error("Erro ao salvar voto:", error);
+            alert("Os Deuses estão ocupados (Erro ao salvar). Verifique sua conexão.");
+        } finally {
+            document.getElementById('loadingOverlay').style.display = "none";
+        }
+    });
+
+    function renderPartialResults() {
+        const resultsList = document.getElementById('resultsList');
+        resultsList.innerHTML = "";
+        let totals = [0, 0, 0, 0];
+        
+        allVotes.forEach(v => {
+            if (v.notes && Array.isArray(v.notes)) {
+                v.notes.forEach((n, i) => {
+                    if (i < 4) totals[i] += (n || 0);
+                });
+            }
+        });
+
+        totals.forEach((t, i) => {
+            const div = document.createElement('div');
+            div.className = 'result-item';
+            div.innerHTML = `<span>Servidor ${i+1}</span> <span>${t} Pontos</span>`;
+            resultsList.appendChild(div);
+        });
+    }
+
+    // --- Funções Administrativas ---
+    window.checkAdminPassword = function() {
+        if (document.getElementById('adminPassword').value === "tr14qv09") {
+            showPage('pageAdminDashboard');
+            document.getElementById('adminPassword').value = "";
+        } else {
+            alert("A senha sagrada está incorreta!");
+        }
+    };
+
+    window.showPage = function(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if (pageId === 'pageAdminDashboard') loadAdminData();
+    };
+
+    window.goToAdmin = function() { showPage('pageAdminLogin'); };
+
+    function loadAdminData() {
+        const tableBody = document.getElementById('adminVotesTable');
+        const scoreCard = document.getElementById('adminScoreCard');
+        tableBody.innerHTML = "";
+        let totals = [0, 0, 0, 0];
+
+        allVotes.forEach(v => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${v.name}</td>
+                <td>${v.accounts}</td>
+                <td>${v.notes ? v.notes.join(' | ') : 'N/A'}</td>
+                <td><button onclick="deleteSingleVote('${v.id}')" style="color:red; cursor:pointer; background:none; border:1px solid red; padding:2px 5px; border-radius:3px;">Banir</button></td>
+            `;
+            tableBody.appendChild(row);
+            if (v.notes) v.notes.forEach((n, i) => { if(i < 4) totals[i] += (n || 0); });
+        });
+
+        scoreCard.innerHTML = totals.map((t, i) => `
+            <div class="score-box">
+                <h4>Servidor ${i+1}</h4>
+                <span>${t}</span>
+            </div>
+        `).join('');
+    }
+
+    window.deleteSingleVote = async (id) => {
+        if(confirm("Deseja banir este voto dos registros permanentes?")) {
+            try {
+                await deleteDoc(doc(db, ...collectionPath, id));
+            } catch (e) { 
+                console.error(e);
+                alert("Erro ao deletar: " + e.message); 
+            }
+        }
+    };
+
+    window.resetVotes = async () => {
+        if (confirm("ATENÇÃO: Deseja apagar todos os votos da história da aliança? Esta ação é irreversível.")) {
+            document.getElementById('loadingOverlay').style.display = "flex";
+            try {
+                const votesRef = collection(db, ...collectionPath);
+                const snapshot = await getDocs(votesRef);
+                const batch = writeBatch(db);
+                snapshot.forEach((d) => batch.delete(d.ref));
+                await batch.commit();
+                alert("Votação resetada com sucesso.");
+            } catch (e) { 
+                console.error(e);
+                alert("Erro ao resetar: " + e.message); 
+            } finally { 
+                document.getElementById('loadingOverlay').style.display = "none"; 
+            }
+        }
+    };
+
+    // Validação de notas exclusivas
+    const selects = document.querySelectorAll('.nota-select');
+    selects.forEach(select => {
+        select.addEventListener('change', function() {
+            const currentValues = Array.from(selects).map(s => s.value).filter(v => v !== "");
+            const hasDuplicates = currentValues.some((val, idx) => currentValues.indexOf(val) !== idx);
+            
+            if (hasDuplicates) {
+                alert("As leis de Ikariam não permitem notas repetidas. Escolha valores únicos de 1 a 4.");
+                this.value = "";
+            }
+        });
+    });
+</script>
+</body>
+</html>
