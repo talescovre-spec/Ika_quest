@@ -445,7 +445,7 @@
     import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-    // --- SUA CONFIGURAÇÃO VINCULADA ---
+    // --- CONFIGURAÇÃO DO FIREBASE (VINCULADA) ---
     const firebaseConfig = {
         apiKey: "AIzaSyALqFDFm5J-IfqIlvvXo3Df_401zQq5U_4",
         authDomain: "servidor-96de7.firebaseapp.com",
@@ -460,15 +460,14 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
     
-    // Caminho da coleção (seguindo estritamente a Regra 1 de Paths)
-    const appId = "ikariam-voting"; // Mantendo fixo para consistência
+    // Caminho da coleção (Regra 1 de Paths)
+    const appId = "ikariam-voting"; 
     const collectionPath = ['artifacts', appId, 'public', 'data', 'votes'];
 
     let currentUser = null;
     let allVotes = [];
 
     // --- Autenticação ---
-    // IMPORTANTE: Você precisa habilitar o provedor "Anônimo" no Console do Firebase em Authentication -> Sign-in method.
     async function initAuth() {
         try {
             await signInAnonymously(auth);
@@ -476,7 +475,7 @@
         } catch (e) {
             console.error("Erro auth:", e);
             if (e.code === 'auth/configuration-not-found') {
-                alert("ERRO DE CONFIGURAÇÃO: Por favor, ative a 'Autenticação Anônima' no console do seu Firebase para que a votação funcione.");
+                alert("ERRO: Ative a 'Autenticação Anônima' no Console do Firebase em Authentication -> Sign-in method.");
             }
         }
     }
@@ -512,7 +511,7 @@
     document.getElementById('quizForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!currentUser) {
-            alert("O Oráculo ainda não concedeu acesso. Verifique se o Login Anônimo está ativo no Firebase.");
+            alert("Aguardando conexão com o Oráculo...");
             return;
         }
 
@@ -540,9 +539,9 @@
             document.getElementById('submitBtn').style.background = "#27ae60";
             document.getElementById('resultsArea').style.display = "block";
             
-            alert("Voto gravado na nuvem!");
+            alert("Voto gravado na nuvem com sucesso!");
         } catch (error) {
-            alert("Erro ao enviar para a nuvem: " + error.message);
+            alert("Erro ao enviar: " + error.message);
         } finally {
             document.getElementById('loadingOverlay').style.display = "none";
         }
